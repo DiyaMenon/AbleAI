@@ -1,4 +1,3 @@
-# speaker.py - instrumented for debugging
 import platform
 import subprocess
 import pyttsx3
