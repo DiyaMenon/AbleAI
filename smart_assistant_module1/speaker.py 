@@ -1,0 +1,31 @@
+# speaker.py  – reliable speech on macOS + cross-platform fallback
+import platform
+import subprocess
+import pyttsx3
+
+def speak(text: str):
+    text = text.strip()
+    if not text:
+        return
+
+    system = platform.system().lower()
+
+    # Use macOS's built-in “say” command (most reliable)
+    if 'darwin' in system:
+        try:
+            subprocess.run(['say', text])
+            return
+        except Exception as e:
+            print("⚠️ macOS say() failed:", e)
+
+    # Fallback for Windows/Linux
+    try:
+        engine = pyttsx3.init()
+        engine.setProperty('rate', 160)
+        voices = engine.getProperty('voices')
+        if voices:
+            engine.setProperty('voice', voices[0].id)
+        engine.say(text)
+        engine.runAndWait()
+    except Exception as e:
+        print("⚠️ Speech synthesis error:", e)
