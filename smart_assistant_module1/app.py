@@ -1,8 +1,7 @@
 import cv2
 import argparse
-import sys
-import os
-import re
+import sys, os, re
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))  # 👈 add this line
 from ocr_reader import ocr_from_image
 from speaker import speak
 import pytesseract

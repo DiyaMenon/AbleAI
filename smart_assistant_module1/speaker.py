@@ -1,7 +1,6 @@
 import platform
 import subprocess
 import pyttsx3
-import time
 import traceback
 
 def speak(text: str):
@@ -12,11 +11,9 @@ def speak(text: str):
         return
 
     system = platform.system().lower()
-    # Try macOS "say" first (most reliable)
     if 'darwin' in system:
         try:
             print("[speaker] using macOS 'say' ...")
-            # use check=True so an exception shows if say fails
             subprocess.run(['say', text], check=True)
             print("[speaker] 'say' completed")
             return
@@ -24,7 +21,6 @@ def speak(text: str):
             print("[speaker] macOS 'say' failed:", repr(e))
             traceback.print_exc()
 
-    # Fallback to pyttsx3
     try:
         print("[speaker] falling back to pyttsx3")
         engine = pyttsx3.init()

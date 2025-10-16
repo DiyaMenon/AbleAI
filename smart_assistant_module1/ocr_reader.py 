@@ -3,29 +3,17 @@ import pytesseract
 import numpy as np
 
 def ocr_from_image(frame, lang='eng'):
-    """Preprocess the image and run Tesseract OCR."""
-    # --- 1. Convert to grayscale
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-
-    # --- 2. Denoise a bit (helps with low light)
     gray = cv2.GaussianBlur(gray, (5, 5), 0)
-
-    # --- 3. Adaptive threshold to sharpen text
     thresh = cv2.adaptiveThreshold(
         gray, 255,
         cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
         cv2.THRESH_BINARY, 11, 2
     )
-
-    # --- 4. Morphological close to join thin gaps
     kernel = np.ones((1, 1), np.uint8)
     processed = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, kernel)
-
-    # --- 5. Optional: upscale small text
     processed = cv2.resize(processed, None, fx=1.5, fy=1.5, interpolation=cv2.INTER_CUBIC)
 
-    # --- 6. Feed to Tesseract with tuned config
-    config = "--oem 3 --psm 6"  # OEM 3 = LSTM+legacy, PSM 6 = block of text
+    config = "--oem 3 --psm 6"
     text = pytesseract.image_to_string(processed, config=config, lang=lang)
-
     return text
